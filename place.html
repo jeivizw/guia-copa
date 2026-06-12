@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes do Local - Guia Copa 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen pb-12">
+
+  <header class="bg-slate-800 border-b border-slate-700 px-4 py-4 sticky top-0 z-50 flex items-center gap-4">
+    <a href="feed.html" class="text-green-400 hover:text-green-300 flex items-center font-bold text-sm">
+      ← Voltar
+    </a>
+    <h1 class="text-base font-bold truncate" id="header-title">Carregando estádio...</h1>
+  </header>
+
+  <main class="max-w-md mx-auto px-4 mt-6 space-y-6">
+
+    <div id="place-details" class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg">
+      <div class="animate-pulse space-y-3">
+        <div class="h-4 bg-slate-700 rounded w-1/4"></div>
+        <div class="h-6 bg-slate-700 rounded w-3/4"></div>
+        <div class="h-4 bg-slate-700 rounded w-full"></div>
+      </div>
+    </div>
+
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg">
+      <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+        <span>📝</span> Deixar Meu Relato
+      </h3>
+      
+      <form id="review-form" class="space-y-4">
+        <div>
+          <label class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Sua Nota</label>
+          <select id="review-rating" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-green-500 transition">
+            <option value="5">⭐⭐⭐⭐⭐ (Excelente)</option>
+            <option value="4">⭐⭐⭐⭐ (Muito Bom)</option>
+            <option value="3">⭐⭐⭐ (Ok / Razoável)</option>
+            <option value="2">⭐⭐ (Ruim / Perrengue)</option>
+            <option value="1">⭐ (Péssimo - Evite!)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Comentário / Dica</label>
+          <textarea id="review-comment" rows="3" required placeholder="Preços, segurança, transporte, filas..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-green-500 transition placeholder:text-slate-600 text-sm"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Foto do Local (Opcional)</label>
+          <input type="file" id="review-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-green-400 hover:file:bg-slate-600 cursor-pointer">
+        </div>
+
+        <button type="submit" id="btn-submit-review" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-slate-900 font-extrabold py-2.5 rounded-lg hover:opacity-90 transition shadow-lg text-sm">
+          Enviar Avaliação
+        </button>
+      </form>
+    </div>
+
+    <div>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Avaliações dos Torcedores</h3>
+      <div id="reviews-list" class="space-y-4">
+        </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { supabase } from './js/supabase.js'
+
+    // Pega o ID da URL (?id=X)
+    const urlParams = new URLSearchParams(window.location.search)
+    const placeId = urlParams.get('id')
+
+    if (!placeId) {
+      window.location.href = 'feed.html'
+    }
+
+    const userId = localStorage.getItem('guia_user_id')
+    if (!userId) {
+      window.location.href = 'index.html'
+    }
+
+    // Elementos DOM
+    const headerTitle = document.getElementById('header-title')
+    const placeDetails = document.getElementById('place-details')
+    const reviewsList = document.getElementById('reviews-list')
+    const reviewForm = document.getElementById('review-form')
+    const btnSubmitReview = document.getElementById('btn-submit-review')
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadPlaceDetails()
+      await loadReviews()
+    })
+
+    // 1. BUSCA DADOS DO ESTÁDIO ESPECÍFICO
+    async function loadPlaceDetails() {
+      const { data: place, error } = await supabase
+        .from('places')
+        .select('*')
+        .eq('id', placeId)
+        .single()
+
+      if (error || !place) {
+        placeDetails.innerHTML = `<p class="text-red-400 text-xs">Local não encontrado.</p>`
+        return
+      }
+
+      headerTitle.innerText = place.name
+      
+      let icon = '🏟️'
+      if (place.category === 'Alimentação') icon = '🍔'
+      if (place.category === 'Transporte') icon = '🚇'
+      if (place.category === 'Lazer') icon = '🏖️'
+
+      placeDetails.innerHTML = `
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-700 text-green-400">
+            ${icon} ${place.category}
+          </span>
+          <span class="text-xs text-slate-400">${place.city}</span>
+        </div>
+        <h2 class="text-lg font-extrabold mt-3">${place.name}</h2>
+        <p class="text-xs text-slate-300 mt-2 leading-relaxed">${place.description || 'Sem descrição.'}</p>
+        <p class="text-[11px] text-slate-400 mt-4 pt-3 border-t border-slate-700/60">
+          📍 <span>${place.address}</span>
+        </p>
+      `
+    }
+
+    // 2. BUSCA AS REVIEWS DESSE ESTÁDIO (FAZENDO JOIN COM A NOVA TABELA USERS)
+    async function loadReviews() {
+      const { data: reviews, error } = await supabase
+        .from('reviews')
+        .select('*, users(full_name)')
+        .eq('place_id', placeId)
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        reviewsList.innerHTML = `<p class="text-red-400 text-xs">Erro ao carregar relatos.</p>`
+        return
+      }
+
+      if (reviews.length === 0) {
+        reviewsList.innerHTML = `
+          <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-6 text-center text-slate-500 text-xs">
+            Ninguém avaliou este estádio ainda. Seja o primeiro!
+          </div>
+        `
+        return
+      }
+
+      reviewsList.innerHTML = reviews.map(review => {
+        const stars = '⭐'.repeat(review.rating)
+        const author = review.users?.full_name || 'Torcedor Anônimo'
+        const photoHtml = review.photo_url 
+          ? `<img src="${review.photo_url}" class="w-full max-h-48 object-cover rounded-lg mt-3 border border-slate-700">` 
+          : ''
+
+        return `
+          <div class="bg-slate-800 border border-slate-700/70 rounded-xl p-4 shadow-sm">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-bold text-green-400">${author}</span>
+              <span class="text-[9px] text-slate-500">${new Date(review.created_at).toLocaleDateString('pt-BR')}</span>
+            </div>
+            <div class="text-xs text-yellow-400 mb-1">${stars}</div>
+            <p class="text-xs text-slate-300">${review.comment}</p>
+            ${photoHtml}
+          </div>
+        `
+      }).join('')
+    }
+
+    // 3. ENVIA NOVA AVALIAÇÃO COM SUPABASE STORAGE (FOTO)
+    reviewForm.addEventListener('submit', async (e) => {
+      e.preventDefault()
+
+      const rating = document.getElementById('review-rating').value
+      const comment = document.getElementById('review-comment').value
+      const fileInput = document.getElementById('review-file')
+      const file = fileInput.files[0]
+
+      btnSubmitReview.disabled = true
+      btnSubmitReview.innerText = 'Enviando Relato...'
+
+      try {
+        let photoUrl = null
+
+        // Se o usuário anexou foto, manda pro bucket de Storage do Supabase
+        if (file) {
+          const fileExt = file.name.split('.').pop()
+          const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}.${fileExt}`
+          const filePath = `reviews/${fileName}`
+
+          const { error: uploadError } = await supabase.storage
+            .from('review-photos') // Garanta que criou esse Bucket público no seu painel
+            .upload(filePath, file)
+
+          if (uploadError) throw uploadError
+
+          const { data } = supabase.storage
+            .from('review-photos')
+            .getPublicUrl(filePath)
+          
+          photoUrl = data.publicUrl
+        }
+
+        // Insere na tabela de reviews relacionando com a nova tabela 'users'
+        const { error: insertError } = await supabase
+          .from('reviews')
+          .insert({
+            place_id: parseInt(placeId),
+            user_id: parseInt(userId),
+            rating: parseInt(rating),
+            comment: comment,
+            photo_url: photoUrl
+          })
+
+        if (insertError) throw insertError
+
+        reviewForm.reset()
+        await loadReviews()
+        alert('Relato enviado com sucesso!')
+
+      } catch (error) {
+        alert('Erro ao enviar: ' + error.message)
+      } finally {
+        btnSubmitReview.disabled = false
+        btnSubmitReview.innerText = 'Enviar Avaliação'
+      }
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia de Sobrevivência - Copa 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-center items-center px-4">
+
+  <div class="w-full max-w-md bg-slate-800 rounded-2xl shadow-xl p-6 border border-slate-700">
+    
+    <div class="text-center mb-8">
+      <span class="text-4xl">⚽</span>
+      <h1 class="text-2xl font-bold mt-2 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+        Guia Copa 2026
+      </h1>
+      <p class="text-slate-400 text-sm mt-1">O manual de sobrevivência do torcedor</p>
+    </div>
+
+    <form id="auth-form" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">E-mail</label>
+        <input type="email" id="email" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-green-500 transition">
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Senha</label>
+        <input type="password" id="password" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-green-500 transition">
+      </div>
+
+      <div id="wrapper-name" class="hidden">
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Nome Completo</label>
+        <input type="text" id="full-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-green-500 transition">
+      </div>
+
+      <button type="submit" id="btn-submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2.5 rounded-lg hover:opacity-90 transition shadow-lg shadow-green-900/20 mt-2">
+        Entrar no Guia
+      </button>
+    </form>
+
+    <div class="text-center mt-6 text-sm">
+      <button id="btn-toggle" class="text-green-400 hover:underline font-medium">
+        Não tem conta? Cadastre-se aqui
+      </button>
+    </div>
+
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explorar - Guia Copa 2026</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen pb-24">
+
+  <!-- HEADER FIXO SUPERIOR -->
+  <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+    <div>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+        Guia Copa 2026 ⚽
+      </h1>
+      <p class="text-xs text-slate-400" id="user-welcome">Carregando perfil...</p>
+    </div>
+    <button id="btn-logout" class="bg-slate-700 hover:bg-red-600/80 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+      Sair
+    </button>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL (Foco Mobile) -->
+  <main class="max-w-md mx-auto px-4 mt-6">
+    
+    <!-- BANNER DE BOAS-VINDAS -->
+    <div class="bg-gradient-to-br from-green-600 to-emerald-800 rounded-2xl p-5 shadow-lg mb-6 relative overflow-hidden">
+      <div class="absolute -right-6 -bottom-6 text-7xl opacity-10 transform rotate-12">🏆</div>
+      <h2 class="text-xl font-bold mb-1">Sobreviva à Copa 2026!</h2>
+      <p class="text-sm text-green-100">Explore locais oficiais, veja notas da torcida e evite perrengues nas sedes.</p>
+    </div>
+
+    <!-- SELETOR DE CATEGORIAS (Filtros Rápidos em Carrossel Horizontal) -->
+    <div class="mb-6">
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Categorias</h3>
+      <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none" id="category-filters">
+        <button data-category="Todos" class="category-btn bg-green-500 text-slate-900 font-bold text-xs px-4 py-2 rounded-full whitespace-nowrap transition shadow-md">
+          🌟 Todos
+        </button>
+        <button data-category="Estádio" class="category-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-full whitespace-nowrap transition">
+          🏟️ Estádios
+        </button>
+        <button data-category="Alimentação" class="category-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-full whitespace-nowrap transition">
+          🍔 Alimentação
+        </button>
+        <button data-category="Transporte" class="category-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-full whitespace-nowrap transition">
+          🚇 Transporte
+        </button>
+        <button data-category="Lazer" class="category-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-full whitespace-nowrap transition">
+          🏖️ Lazer
+        </button>
+      </div>
+    </div>
+
+    <!-- LISTA DE LOCAIS (Preenchido dinamicamente pelo app.js) -->
+    <div class="space-y-4" id="places-list">
+      <!-- Skeleton Loader (Efeito de carregamento animado) -->
+      <div class="animate-pulse bg-slate-800 h-32 rounded-xl border border-slate-700"></div>
+      <div class="animate-pulse bg-slate-800 h-32 rounded-xl border border-slate-700"></div>
+    </div>
+
+  </main>
+
+  <!-- BARRA DE NAVEGAÇÃO INFERIOR ESTILO MOBILE NATIVO -->
+  <nav class="bg-slate-800/90 backdrop-blur-md border-t border-slate-700 fixed bottom-0 left-0 right-0 py-3 px-6 flex justify-around items-center max-w-md mx-auto rounded-t-2xl shadow-2xl z-50">
+    <a href="feed.html" class="flex flex-col items-center text-green-400">
+      <span class="text-xl">📍</span>
+      <span class="text-[10px] font-medium mt-0.5">Explorar</span>
+    </a>
+    <a href="#" onclick="alert('Em desenvolvimento!')" class="flex flex-col items-center text-slate-400 hover:text-slate-200">
+      <span class="text-xl">🗺️</span>
+      <span class="text-[10px] font-medium mt-0.5">Mapa</span>
+    </a>
+    <a href="#" onclick="alert('Em breve!')" class="flex flex-col items-center text-slate-400 hover:text-slate-200">
+      <span class="text-xl">⭐</span>
+      <span class="text-[10px] font-medium mt-0.5">Minhas Reviews</span>
+    </a>
+  </nav>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
